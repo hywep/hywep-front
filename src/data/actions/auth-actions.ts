@@ -69,6 +69,7 @@ export async function registerUserAction(prevState: never, formData: FormData) {
         }
 
         const id = `${(new Date().getTime()-Math.floor(Math.random() * 1000))}`;
+        const createdAt = new Date().toISOString().split("T")[0];
 
         const dynamoDBResponse = await dynamoDBClient.send(
             new PutItemCommand({
@@ -81,6 +82,7 @@ export async function registerUserAction(prevState: never, formData: FormData) {
                         L: majors.map((major: string) => ({ S: major })),
                     },
                     grade: { N: grade },
+                    created_at: { S: createdAt },
                 },
             })
         );
