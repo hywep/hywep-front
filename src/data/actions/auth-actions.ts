@@ -21,7 +21,7 @@ const schemaRegister = z.object({
     grade: z.string().min(1, { message: "학년은 필수 입력 항목입니다." }),
 });
 
-const dynamoDBClient = new DynamoDBClient();
+const dynamoDBClient = new DynamoDBClient({region: "ap-northeast-2"});
 
 const TABLE_NAME = "hywep-users-dev";
 const EMAIL_INDEX_NAME = "email-index";
