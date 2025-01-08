@@ -1,30 +1,24 @@
 "use server";
-import { z } from "zod";
-import {
-    DynamoDBClient,
-    PutItemCommand,
-    QueryCommand,
-    ConditionalCheckFailedException,
-} from "@aws-sdk/client-dynamodb";
+import {z} from "zod";
+import {ConditionalCheckFailedException, DynamoDBClient, PutItemCommand, QueryCommand,} from "@aws-sdk/client-dynamodb";
 
 const schemaRegister = z.object({
     name: z
         .string()
-        .min(1, { message: "사용자 이름은 최소 1자 이상이어야 합니다." })
-        .max(20, { message: "사용자 이름은 최대 20자 이하여야 합니다." }),
+        .min(1, {message: "사용자 이름은 최소 1자 이상이어야 합니다."})
+        .max(20, {message: "사용자 이름은 최대 20자 이하여야 합니다."}),
     email: z
         .string()
-        .email({ message: "올바른 이메일 주소를 입력해주세요." }),
+        .email({message: "올바른 이메일 주소를 입력해주세요."}),
     majors: z
         .array(z.string())
-        .min(1, { message: "최소 하나의 학과를 선택해야 합니다." }),
-    grade: z.string().min(1, { message: "학년은 필수 입력 항목입니다." }),
+        .min(1, {message: "최소 하나의 학과를 선택해야 합니다."}),
+    grade: z.string().min(1, {message: "학년은 필수 입력 항목입니다."}),
 });
 
 const dynamoDBClient = new DynamoDBClient({region: "ap-northeast-2"});
 
-const TABLE_NAME = "hywep-users-prod";
-const EMAIL_INDEX_NAME = "email-index";
+const TABLE_NAME = `hywep-users-${process.env.STAGE}`;
 
 export async function registerUserAction(prevState: never, formData: FormData) {
 
@@ -46,16 +40,16 @@ export async function registerUserAction(prevState: never, formData: FormData) {
 
     console.log("성공");
 
-    const { name, email, majors, grade } = validatedFields.data;
+    const {name, email, majors, grade} = validatedFields.data;
 
     try {
         const emailCheckResponse = await dynamoDBClient.send(
             new QueryCommand({
                 TableName: TABLE_NAME,
-                IndexName: EMAIL_INDEX_NAME,
+                IndexName: "email-index",
                 KeyConditionExpression: "email = :email",
                 ExpressionAttributeValues: {
-                    ":email": { S: email },
+                    ":email": {S: email},
                 },
             })
         );
@@ -68,21 +62,21 @@ export async function registerUserAction(prevState: never, formData: FormData) {
             };
         }
 
-        const id = `${(new Date().getTime()-Math.floor(Math.random() * 1000))}`;
+        const id = `${(new Date().getTime() - Math.floor(Math.random() * 1000))}`;
         const createdAt = new Date().toISOString().split("T")[0];
 
         const dynamoDBResponse = await dynamoDBClient.send(
             new PutItemCommand({
                 TableName: TABLE_NAME,
                 Item: {
-                    id: { N: id },
-                    name: { S: name },
-                    email: { S: email },
+                    id: {N: id},
+                    name: {S: name},
+                    email: {S: email},
                     majors: {
-                        L: majors.map((major: string) => ({ S: major })),
+                        L: majors.map((major: string) => ({S: major})),
                     },
-                    grade: { N: grade },
-                    created_at: { S: createdAt },
+                    grade: {N: grade},
+                    created_at: {S: createdAt},
                 },
             })
         );
@@ -104,9 +98,39 @@ export async function registerUserAction(prevState: never, formData: FormData) {
         };
     }
 
+    await sendSlackMessage(`${process.env.STAGE} 회원 가입:\n- 이름: ${name}\n- 이메일: ${email}\n- 학과: ${majors.join(',')}\n- 학년: ${grade}`);
+
     return {
         prevState,
         data: "ok",
         message: "성공적으로 등록되었습니다.",
     };
 }
+
+
+async function sendSlackMessage(message: string) {
+    const payload = {text: message};
+
+    try {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        const response = await fetch(process.env.SLACK_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Slack API error:', errorData);
+            return;
+        }
+
+        console.log('Slack message sent successfully');
+    } catch (error) {
+        console.error('Error sending Slack message:', error);
+    }
+}
+
