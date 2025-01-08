@@ -31,8 +31,6 @@ export function RegisterForm() {
     // @ts-expect-error
     const [formState, formAction] = useActionState(registerUserAction, INITIAL_STATE);
 
-    console.log(formState, "client");
-
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
     const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
