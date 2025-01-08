@@ -1,7 +1,15 @@
-import type { NextConfig } from "next";
+import {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    async redirects() {
+        return [
+            {
+                source: "/((?!register|completion).*)",
+                destination: "/register",
+                permanent: true,
+            },
+        ];
+    },
 };
 
 export default nextConfig;
