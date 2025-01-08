@@ -23,7 +23,7 @@ const schemaRegister = z.object({
 
 const dynamoDBClient = new DynamoDBClient({region: "ap-northeast-2"});
 
-const TABLE_NAME = "hywep-users-dev";
+const TABLE_NAME = "hywep-users-prod";
 const EMAIL_INDEX_NAME = "email-index";
 
 export async function registerUserAction(prevState: never, formData: FormData) {
