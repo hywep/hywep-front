@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useState, useActionState } from "react";
-import { useRouter } from "next/navigation";
+import React, {useActionState, useState} from "react";
+import {useRouter} from "next/navigation";
 import {
     DropdownMenu,
-    DropdownMenuTrigger,
     DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Card, CardTitle, CardDescription, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { sortedColleges } from "@/lib/utils";
-import { registerUserAction } from "@/data/actions/auth-actions";
-import { ZodErrors } from "@/components/custom/ZodErrors";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Button} from "@/components/ui/button";
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
+import {sortedColleges} from "@/lib/utils";
+import {registerUserAction} from "@/data/actions/auth-actions";
+import {ZodErrors} from "@/components/custom/ZodErrors";
 
 const INITIAL_STATE = {
     data: null,
@@ -83,9 +83,9 @@ export function RegisterForm() {
             <form action={formAction}>
                 <Card>
                     <CardHeader className="space-y-1">
-                        <CardTitle className="text-3xl font-bold">한양대학교 현장실습 알림 등록</CardTitle>
+                        <CardTitle className="text-3xl font-bold">하이웹 알림 등록</CardTitle>
                         <CardDescription>
-                            실시간 최신 공고를 이메일로 보내드립니다.
+                            실시간으로 추가되는 현장실습 공고를 이메일로 보내드립니다.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -100,7 +100,7 @@ export function RegisterForm() {
                                 onChange={(e) => setName(e.target.value)}
                             />
                         </div>
-                        <ZodErrors error={formState?.zodErrors?.fieldErrors.name ?? []} />
+                        <ZodErrors error={formState?.zodErrors?.fieldErrors.name ?? []}/>
                         <div className="space-y-2">
                             <Label htmlFor="email">이메일</Label>
                             <Input
@@ -112,7 +112,7 @@ export function RegisterForm() {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <ZodErrors error={formState?.zodErrors?.fieldErrors.email ?? []} />
+                        <ZodErrors error={formState?.zodErrors?.fieldErrors.email ?? []}/>
                         {formState?.message === "이미 존재하는 이메일입니다." && (
                             <Alert className="mt-4" variant="destructive">
                                 <AlertTitle>중복된 이메일</AlertTitle>
@@ -126,7 +126,8 @@ export function RegisterForm() {
                             <Label>학과</Label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button className="w-full bg-white text-black border border-gray-300 hover:bg-gray-100 truncate">
+                                    <Button
+                                        className="w-full bg-white text-black border border-gray-300 hover:bg-gray-100 truncate">
                                         {getDisplayText()}
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -167,13 +168,14 @@ export function RegisterForm() {
                                 name="majors"
                                 value={JSON.stringify(selectedMajors)}
                             />
-                            <ZodErrors error={formState?.zodErrors?.fieldErrors.majors ?? []} />
+                            <ZodErrors error={formState?.zodErrors?.fieldErrors.majors ?? []}/>
                         </div>
                         <div className="space-y-2">
                             <Label>학년</Label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button className="w-full bg-white text-black border border-gray-300 hover:bg-gray-100">
+                                    <Button
+                                        className="w-full bg-white text-black border border-gray-300 hover:bg-gray-100">
                                         {selectedGrade || "선택"}
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -193,7 +195,7 @@ export function RegisterForm() {
                                 name="grade"
                                 value={selectedGrade ? parseInt(selectedGrade[0]).toString() : ""}
                             />
-                            <ZodErrors error={formState?.zodErrors?.fieldErrors.grade ?? []} />
+                            <ZodErrors error={formState?.zodErrors?.fieldErrors.grade ?? []}/>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col">
