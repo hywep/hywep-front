@@ -98,7 +98,8 @@ export async function registerUserAction(prevState: never, formData: FormData) {
         };
     }
 
-    await sendSlackMessage(`${process.env.STAGE} 회원 가입:\n- 이름: ${name}\n- 이메일: ${email}\n- 학과: ${majors.join(',')}\n- 학년: ${grade}`);
+    if (process.env.STAGE === 'prod')
+        await sendSlackMessage(`${process.env.STAGE} 회원 가입:\n- 이름: ${name}\n- 이메일: ${email}\n- 학과: ${majors.join(',')}\n- 학년: ${grade}`);
 
     return {
         prevState,
