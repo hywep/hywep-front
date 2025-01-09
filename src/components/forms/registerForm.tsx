@@ -123,7 +123,7 @@ export function RegisterForm() {
                         )}
 
                         <div className="space-y-2">
-                            <Label>학과</Label>
+                            <Label>학과 (복수선택 가능)</Label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
