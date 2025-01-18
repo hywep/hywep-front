@@ -30,12 +30,14 @@ export function RegisterForm() {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const [formState, formAction] = useActionState(registerUserAction, INITIAL_STATE);
-
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
     const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [tags, setTags] = useState<string[]>([]);
+    const [tagInput, setTagInput] = useState("");
 
     React.useEffect(() => {
         if (formState?.data === "ok") {
@@ -66,6 +68,17 @@ export function RegisterForm() {
         setSelectedGrade(grade);
     };
 
+    const handleAddTag = () => {
+        if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+            setTags((prev) => [...prev, tagInput.trim()]);
+        }
+        setTagInput("");
+    };
+
+    const handleRemoveTag = (keyword: string) => {
+        setTags((prev) => prev.filter((k) => k !== keyword));
+    };
+
     const grades = ["1학년", "2학년", "3학년", "4학년"];
 
     const getDisplayText = () => {
@@ -82,10 +95,10 @@ export function RegisterForm() {
         <div className="w-full max-w-md mx-auto">
             <form action={formAction}>
                 <Card>
-                    <CardHeader className="space-y-1">
+                    <CardHeader className="space-y-1 text-center">
                         <CardTitle className="text-3xl font-bold">하이웹 알림 등록</CardTitle>
                         <CardDescription>
-                            실시간으로 추가되는 현장실습 공고를 이메일로 보내드립니다.
+                            실시간으로 추가되는 현장실습 공고를 이메일로 보내드립니다
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -121,6 +134,18 @@ export function RegisterForm() {
                                 </AlertDescription>
                             </Alert>
                         )}
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">비밀번호</Label>
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="4자리 이상"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
 
                         <div className="space-y-2">
                             <Label>학과 (복수선택 가능)</Label>
@@ -193,9 +218,69 @@ export function RegisterForm() {
                             <input
                                 type="hidden"
                                 name="grade"
-                                value={selectedGrade ? parseInt(selectedGrade[0]).toString() : ""}
+                                value={selectedGrade ? Number(selectedGrade[0]) : 1}
                             />
                             <ZodErrors error={formState?.zodErrors?.fieldErrors.grade ?? []}/>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                                <Label htmlFor="tags" className="inline-block">
+                                    희망 키워드
+                                </Label>
+                                <div className="relative group">
+                                    <button
+                                        type="button"
+                                        className="w-5 h-5 bg-gray-300 text-black font-bold rounded-full flex items-center justify-center hover:bg-gray-400"
+                                    >
+                                        ?
+                                    </button>
+                                    <div
+                                        className="absolute top-0 left-6 transform -translate-y-1/2 bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 whitespace-nowrap">
+                                        공고에 포함되길 원하는 키워드를 추가해주세요.<br/>
+                                        예: 삼성, VC, 백엔드, 기획자
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex space-x-2">
+                                <Input
+                                    type="text"
+                                    placeholder="키워드 입력"
+                                    value={tagInput}
+                                    onChange={(e) => setTagInput(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                />
+                                <Button type="button" onClick={handleAddTag}>
+                                    추가
+                                </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {tags.map((tag) => (
+                                    <div
+                                        key={tag}
+                                        className="flex items-center space-x-2 px-2 py-1 bg-gray-200 rounded"
+                                    >
+                                        <span className="text-sm">{tag}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveTag(tag)}
+                                            className="text-red-500 hover:text-red-700 text-xs flex items-center justify-center h-4 w-4 rounded-full bg-gray-300"
+                                            aria-label={`Remove ${tag}`}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                            <input
+                                type="hidden"
+                                name="tags"
+                                value={JSON.stringify(tags)}
+                            />
+                            <ZodErrors error={formState?.zodErrors?.fieldErrors.tags ?? []}/>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col">
