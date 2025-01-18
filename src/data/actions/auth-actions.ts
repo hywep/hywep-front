@@ -8,7 +8,8 @@ const config = {
     maxAge: 60 * 60 * 24 * 7,
     path: "/",
     httpOnly: true,
-    secure: false,
+    secure: process.env.STAGE === "prod",
+    sameSite: (process.env.STAGE === "prod" ? "None" : "Lax") as "none" | "lax" | "strict",
 }
 
 const schemaRegister = z.object({
@@ -150,7 +151,7 @@ export async function loginUserAction(prevState: never, formData: FormData) {
             message: responseData.message,
         };
     }
-    
+
     (await cookies()).set("jwt", responseData.token!, config);
 
     return {

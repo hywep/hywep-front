@@ -7,7 +7,8 @@ export async function POST() {
         path: "/",
         expires: new Date(0),
         httpOnly: true,
-        secure: process.env.Stage === "production",
+        secure: process.env.STAGE === "prod",
+        sameSite: (process.env.STAGE === "prod" ? "None" : "Lax") as "none" | "lax" | "strict",
     });
 
     return response;
