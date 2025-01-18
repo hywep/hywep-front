@@ -150,8 +150,7 @@ export async function loginUserAction(prevState: never, formData: FormData) {
             message: responseData.message,
         };
     }
-
-    console.log(config);
+    
     (await cookies()).set("jwt", responseData.token!, config);
 
     return {

@@ -5,7 +5,6 @@ import {jwtVerify} from "jose";
 export async function getUserMeLoader() {
     try {
         const authToken = await getAuthToken();
-        console.log('token', authToken);
 
         if (!authToken) return {ok: false, data: null, error: null};
 
