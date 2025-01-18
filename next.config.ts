@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
     async redirects() {
         return [
             {
-                source: "/((?!register|completion).*)",
-                destination: "/register",
+                source: "/",
+                destination: "/signin",
                 permanent: true,
             },
         ];
