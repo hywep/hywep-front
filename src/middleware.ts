@@ -7,8 +7,6 @@ export async function middleware(request: NextRequest) {
     const currentPath = request.nextUrl.pathname;
 
     if (currentPath.startsWith("/setting") && !user.ok) {
-        console.log(user);
-        console.log('go back to signin');
         return NextResponse.redirect(new URL("/signin", request.url));
     }
 
