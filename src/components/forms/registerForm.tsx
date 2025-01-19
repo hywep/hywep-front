@@ -116,12 +116,12 @@ export function RegisterForm() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="name">이름</Label>
+                                <Label htmlFor="name">닉네임</Label>
                                 <Input
                                     id="name"
                                     name="name"
                                     type="text"
-                                    placeholder="이름"
+                                    placeholder="닉네임"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 />
