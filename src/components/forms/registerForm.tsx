@@ -100,7 +100,7 @@ export function RegisterForm() {
             <header className="w-full bg-black text-white p-4 flex justify-start items-center">
                 <Button
                     onClick={handleLogin}
-                    className="bg-white hover:bg-red-600 text-black px-4 py-2 ml-auto"
+                    className="bg-white hover:bg-gray-200 text-black px-4 py-2 ml-auto"
                 >
                     로그인
                 </Button>
