@@ -111,7 +111,7 @@ export function SettingForm({user}: UserProp) {
 
     return (
         <div className="w-full max-w-md mx-auto">
-            <header className="w-full bg-gray-800 text-white p-4 flex justify-start items-center">
+            <header className="w-full bg-black text-white p-4 flex justify-start items-center">
                 <Button
                     onClick={handleLogout}
                     className="bg-white hover:bg-red-600 text-black px-4 py-2 ml-auto"
